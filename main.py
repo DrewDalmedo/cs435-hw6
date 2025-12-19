@@ -1,3 +1,7 @@
+# Keegan Wooding krw6@njit.edu
+#
+#
+
 '''
 (a) Constructs and prints a frequency table for all characteres in the string st.
 
@@ -97,6 +101,7 @@ def Huffman_code(st):
         n2 = heap.pop()
 
         # ...
+
 
 
 '''
