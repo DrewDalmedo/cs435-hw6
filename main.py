@@ -62,7 +62,7 @@ class Heap:
                 smallest = right
 
             if smallest != idx:
-                self.heap_[idx], self.heap[smallest] = self.heap_[smallest], self.heap_[idx]
+                self.heap_[idx], self.heap_[smallest] = self.heap_[smallest], self.heap_[idx]
                 idx = smallest
             else:
                 break
@@ -74,6 +74,9 @@ class Heap:
     def pop(self):
         if len(self.heap_) == 0:
             return None
+        
+        if len(self.heap_) == 1:
+            return self.heap_.pop()
 
         min_node = self.heap_[0]
         last = self.heap_.pop()
@@ -93,14 +96,49 @@ def Huffman_code(st):
     frequencies = frequency_table(st)
     heap = Heap()
 
+    # for each item and its frequency push it to min heap
     for char, freq in frequencies.items():
-        heap.push(heap, Node(char, freq))
+        heap.push(Node(char, freq))
+
+    #check if only one element in the heap
+    if len(heap) == 1:
+        n = heap.pop()
+        print(f"{repr(n.char)}:0")
+        return 
 
     while len(heap) > 1:
         n1 = heap.pop()
         n2 = heap.pop()
 
-        # ...
+        #The sum of the frequency of two child nodes
+        merged_node = Node(char = None, freq=n1.freq + n2.freq, left=n1, right = n2 )
+
+        #add total counts for both the child nodes to the tree
+        heap.push(merged_node)
+
+
+    root = heap.pop()
+
+    codes = {}
+
+    def build_codes(node, curr_code):
+        if node.left is None and node.right is None:
+            codes[node.char] = curr_code
+            return
+        if node.left is not None:
+            build_codes(node.left, curr_code + "0")
+
+        if node.right is not None:
+            build_codes(node.right, curr_code + "1")
+
+    build_codes(root,"")
+
+    for ch in sorted(codes.keys()):
+        print(f"{repr(ch)}: {codes[ch]}")
+    return codes
+
+
+
 
 
 
@@ -113,7 +151,21 @@ def Huffman_code(st):
 - Output:   Print the binary-encoded version of st
 '''
 def Huffman_encode(st, codes):
-    pass
+    encoded_bits = []
+
+    for ch in st:
+        #checking if a character is a proper part of the encoding
+        if ch not in codes:
+            raise ValueError(f"{repr(ch)} is not a valid encoding")
+        #replacing characters with their bit encoded form
+        encoded_bits.append(codes[ch])
+    
+    #forming the encoded strings
+    encoded_string = "".join(encoded_bits)
+
+    print(encoded_string)
+
+    return encoded_string
 
 
 '''
@@ -145,7 +197,11 @@ def Huffman_decode(bst, tree):
 def main():
     test_string = "mississippi"
 
-    freq = frequency_table(test_string)
+    #freq = frequency_table(test_string)
+
+    code = Huffman_code(test_string)
+
+    Huffman_encode(test_string,code)
     
 
 
