@@ -5,7 +5,10 @@
 - Output:   Print each character in st together with the number of times it appears
 '''
 def frequency_table(st):
-    frequencies = {char: st.count(char) for char in st}
+    frequencies = {}
+    for char in st:
+        frequencies[char] = frequencies.get(char, 0) + 1
+
     print(frequencies)
 
     # also return frequencies for use with other parts
@@ -61,7 +64,7 @@ def Huffman_decode(bst, tree):
 
 
 def main():
-    test_string = "water water everywhere but not a drop to drink"
+    test_string = "mississippi"
 
     freq = frequency_table(test_string)
     
