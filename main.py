@@ -1,6 +1,6 @@
 # Keegan Wooding krw6@njit.edu
 # Andrew Dalmedo ad643@njit.edu
-#
+# Alessio Braccili ajb98@njit.edu
 
 '''
 (a) Constructs and prints a frequency table for all characteres in the string st.
