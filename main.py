@@ -92,6 +92,9 @@ class Heap:
     def __len__(self):
         return len(self.heap_)
 
+def is_leaf(node):
+    return node.left is None and node.right is None and node.char is not None
+
 def Huffman_code(st):
     frequencies = frequency_table(st)
     heap = Heap()
@@ -110,8 +113,20 @@ def Huffman_code(st):
         n1 = heap.pop()
         n2 = heap.pop()
 
+        if is_leaf(n1) != is_leaf(n2):
+            left = n1 if not is_leaf(n1) else n2
+            right = n2 if left is n1 else n1
+
+        elif is_leaf(n1) and is_leaf(n2):
+            if n1.char <= n2.char:
+                left,right = n1,n2
+            else:  
+                left,right = n2,n1
+        else:
+            left,right = n1,n2      
+
         #The sum of the frequency of two child nodes
-        merged_node = Node(char = None, freq=n1.freq + n2.freq, left=n1, right = n2 )
+        merged_node = Node(char = None, freq=n1.freq + n2.freq, left=left, right = right )
 
         #add total counts for both the child nodes to the tree
         heap.push(merged_node)
@@ -134,7 +149,7 @@ def Huffman_code(st):
     build_codes(root,"")
 
     for ch in sorted(codes.keys()):
-        print(f"{repr(ch)}: {codes[ch]}")
+        print(f" {repr(ch)}: {codes[ch]}")
     return codes
 
 
@@ -163,7 +178,7 @@ def Huffman_encode(st, codes):
     #forming the encoded strings
     encoded_string = "".join(encoded_bits)
 
-    print(encoded_string)
+    print(f" Huffman Encoded String: {encoded_string}")
 
     return encoded_string
 
@@ -175,7 +190,28 @@ def Huffman_encode(st, codes):
 - Output:   Return the root of the Huffman tree produced from the List
 '''
 def Huffman_tree(L):
-    pass
+    root = Node(char=None,freq=0)
+
+    for ch, code in L:
+        curr = root
+        for bit in code:
+            if bit == '0':
+                if curr.left is None:
+                    curr.left = Node(char=None,freq=0)
+                curr = curr.left
+            elif bit == '1':
+                if curr.right is None:
+                    curr.right = Node(char=None,freq=0)
+                curr = curr.right
+            else:
+                raise ValueError(f"{repr(ch)} is invalid")
+            
+        if curr.char is not None and curr.char != ch:
+            raise ValueError(f"{repr(ch)} is causing a leaf conflict" )
+
+        curr.char = ch
+    print("Huffman Tree has been formed")
+    return root
 
 
 '''
@@ -187,22 +223,59 @@ def Huffman_tree(L):
 - Output:   Print the decoded string
 '''
 def Huffman_decode(bst, tree):
-    pass
+    decoded = []
+    curr = tree
 
+    for bit in bst:
+        if bit == '0':
+            curr = curr.left
+        elif bit == '1':
+            curr = curr.right
+        else:
+            raise ValueError(f"{repr(bit)} is invalid")
+        
+        if curr.left is None and curr.right is None:
+            decoded.append(curr.char)
+            curr = tree
 
+    decoded_string = "".join(decoded)
 
+    print(decoded_string)
 
+    return decoded
 
 
 def main():
-    test_string = "mississippi"
+    '''test_string = "mississippi"
 
     #freq = frequency_table(test_string)
 
     code = Huffman_code(test_string)
 
-    Huffman_encode(test_string,code)
-    
+    Huffman_encode(test_string,code)'''
+
+    st = "abbcccdddd"
+
+
+    frequency_table(st)
+
+    Huffman_code(st)
+
+    codes = {'a' : '000', 'b' : '001', 'c' : '01', 'd': '1'}
+
+    Huffman_encode(st,codes)
+
+    L = [('a', '000'), ('b', '001'), ('c', '01'), ('d', '1')]
+
+    tree = Huffman_tree(L)
+
+    bst = "0000010010101011111"
+
+    Huffman_decode(bst,tree)
+
+
+
+       
 
 
 if __name__ == "__main__":
