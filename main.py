@@ -1,5 +1,5 @@
 # Keegan Wooding krw6@njit.edu
-#
+# Andrew Dalmedo ad643@njit.edu
 #
 
 '''
@@ -242,7 +242,7 @@ def Huffman_decode(bst, tree):
 
     print(decoded_string)
 
-    return decoded
+    return decoded_string
 
 
 def main():
